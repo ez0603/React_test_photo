@@ -11,8 +11,10 @@ import { useMemo } from "react";
 import { css } from "@emotion/react";
 
 const layout = css`
+    box-sizing: border-box;
     width: 100%;
     height: 50px;
+    padding: 40px;
 `;
 
 function PhotoAlbum() {
@@ -24,9 +26,9 @@ function PhotoAlbum() {
 
     return (
         <div css={layout}>
-            {imgList.map(img => {
+            {imgList.map(img => 
                 <img src={img.imageUrl} alt={img.file} />
-            })}
+            )}
         </div>
     );
 }

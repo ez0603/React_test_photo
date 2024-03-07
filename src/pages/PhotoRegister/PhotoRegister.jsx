@@ -49,7 +49,6 @@ function PhotoRegister() {
             const fileReader = new FileReader();
 
             fileReader.onload = (e) => {
-                console.log(e.target.result)
                 resolve({
                     ...loadImage,
                     imageUrl: e.target.result
@@ -60,15 +59,14 @@ function PhotoRegister() {
 
         Promise.all(promises)
         .then(result => {
-            let img = [];
-            console.log(result)
-            img = [...imgList,...result]
             console.log(imgList)
+            let img = [];
+            img = [...imgList,...result]
             if(!window.confirm("이미지를 저장하시겠습니까?")){
                 alert("취소되었습니다.")
                 return;
             } 
-                localStorage.setItem("photo", JSON.stringify(result));
+                localStorage.setItem("photo", JSON.stringify(img));
                 alert("저장되었습니다.")
         })
     }

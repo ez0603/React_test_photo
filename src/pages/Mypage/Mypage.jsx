@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import WideButton from "../../components/WideButton/WideButton";
 import { useInput } from "../../hooks/useInput";
 import * as S from "./style";
@@ -20,27 +20,25 @@ import defaultProfile from "../../assets/images/profile/default.jpeg"
  * 3. RootHeader의 프로필 이미지도 변경되어야함.
  */
 function Mypage(props) {
-    const [ nicknameValue, handleNicknameOnChange ] = useInput();
-    const [ nameValue, handleNameOnChange ] = useInput();
-    const [ birthdayValue, handleBirthdayOnChange ] = useInput();
+    const [ nicknameValue, setNicknameValue, handleNicknameOnChange ] = useInput();
+    const [ nameValue , setNameValue, handleNameOnChange ] = useInput();
+    const [ birthdayValue , setBrithdayValue, handleBirthdayOnChange ] = useInput();
     const [ profileUrl, setProfileUrl ] = useState(defaultProfile);
 
     const imgRef = useRef();
 
-    // useEffect(() => {
-    //     setProfileUrl(!localStorage.getItem("profileUrl") ? [] : JSON.parse(localStorage.getItem("profileUrl")));
-    // }, []);
-
-
-    const user = {
-            nickname: nicknameValue,
-            namd: nameValue,
-            birthday: birthdayValue,
-            imgUrl: imgRef
-          }
-
-    
-    
+    useEffect(() => {
+        const userJson = localStorage.getItem("user")
+        if(!userJson) {
+            return;
+        }
+        const user = JSON.parse(userJson)
+        console.log(user)
+        setNicknameValue(() => user.nickname)
+        setNameValue(() => user.name)
+        setBrithdayValue(() => user.birthday)
+        setProfileUrl(() => user.imgUrl)
+    }, [])
 
     const handleClickChange = (e) => {
         const fileReader = new FileReader();
@@ -48,15 +46,16 @@ function Mypage(props) {
         if(e.target.files.length === 0) {
             return;
         }
-
+        
         fileReader.onload = (e) => {
             setProfileUrl(e.target.result);
         }
-
+        
         fileReader.readAsDataURL(e.target.files[0])
     }
-
+    
     const handleClickProfileChange = (e) => {
+
         if(nicknameValue === "") {
             alert("닉네임을 입력해주세요.")
             return;
@@ -68,6 +67,15 @@ function Mypage(props) {
             return;
         }
 
+        const user = {
+                nickname: nicknameValue,
+                name: nameValue,
+                birthday: birthdayValue,
+                imgUrl: profileUrl
+              }
+              console.log(user)
+        
+        localStorage.setItem("user", JSON.stringify(user))
     }
 
     return (
